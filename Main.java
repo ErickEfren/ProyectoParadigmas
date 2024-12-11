@@ -88,7 +88,8 @@ public class Main {
         System.out.printf("%-3s %-30s %-5s\n", "ID", "Equipo", "Puntos");
         System.out.println("-----------------------------------------------");
         for (int i = 0; i < equipos.size(); i++) {
-            System.out.printf("%-3d %-30s %-5d\n", equipos.get(i).getId(), equipos.get(i).getNombre(), equipos.get(i).getScore());
+            String color = equipos.get(i).isSelected() ? "\u001B[32m" : "\u001B[37m";
+            System.out.printf(color + "%-3d %-30s %-5d \u001B[0m \n", equipos.get(i).getId(), equipos.get(i).getNombre(), equipos.get(i).getScore());
         }
         System.out.println("-----------------------------------------------");
     }
@@ -133,5 +134,7 @@ public class Main {
         int ID = teclado.nextInt();
 
         SeleccionarById(equipos, ID);
+
+        equipos.generateMatches(equipos);
     }
 }
