@@ -13,7 +13,7 @@ public class Calendario {
 
     private void generarCalendario(ArrayList<Equipo> equipos) {
         if (equipos.size() % 2 != 0) {
-            equipos.add(new Equipo()); // Equipo ficticio para descanso
+            equipos.add(new Equipo());
         }
 
         int numEquipos = equipos.size();
@@ -31,6 +31,18 @@ public class Calendario {
                     !visitante.getNombre().equals("Semana de Descanso")) {
                     jornada.add(new Partido(local, visitante));
                 }
+            }
+            jornadas.add(jornada);
+        }
+
+        for (int i = 0; i < numJornadas; i++) {
+            ArrayList<Partido> jornada = new ArrayList<>();
+
+            for (Partido partidoIda : jornadas.get(i)) {
+                Equipo local = partidoIda.getVisitante();
+                Equipo visitante = partidoIda.getLocal();
+
+                jornada.add(new Partido(local, visitante));
             }
             jornadas.add(jornada);
         }
@@ -59,12 +71,12 @@ public class Calendario {
             partido.jugarPartido();
             System.out.println(partido.getResultado());
 
-            if (partido.getResultado().contains("empate")) {
-                tablaGeneral.actualizarTabla(partido.getLocal(), partido.getVisitante(), true);
-            } else if (partido.getResultado().contains(partido.getLocal().getNombre())) {
+            if (partido.getResultado().contains("\u001B[32m" + partido.getLocal().getNombre())) {
                 tablaGeneral.actualizarTabla(partido.getLocal(), partido.getVisitante(), false);
-            } else {
+            } else if (partido.getResultado().contains("\u001B[32m" + partido.getVisitante().getNombre())) {
                 tablaGeneral.actualizarTabla(partido.getVisitante(), partido.getLocal(), false);
+            } else {
+                tablaGeneral.actualizarTabla(partido.getLocal(), partido.getVisitante(), true);
             }
         }
     }
@@ -73,3 +85,4 @@ public class Calendario {
         tablaGeneral.mostrarTabla();
     }
 }
+

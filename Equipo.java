@@ -2,7 +2,7 @@ import java.util.ArrayList;
 
 public class Equipo {
     private String nombre;
-    private int score, id, wins, losses, draws;
+    private int score, id, wins, losses, draws, points;
     private static int contadorEquipos = 0;
     private boolean selected;
 
@@ -14,6 +14,7 @@ public class Equipo {
         this.wins = 0;
         this.losses = 0;
         this.draws = 0;
+        this.points = 0;
     }
 
     public Equipo(String nombre, int score) {
@@ -24,6 +25,7 @@ public class Equipo {
         this.wins = 0;
         this.losses = 0;
         this.draws = 0;
+        this.points = 0;
     }
 
     public String getNombre() {
@@ -69,4 +71,12 @@ public class Equipo {
     public void incrementDraws() {
         this.draws++;
     }
+
+    public int getPoints() {
+        return this.points;
+    }
+    public void addPoints(int points) {
+        this.points += points;
+    }
 }
+

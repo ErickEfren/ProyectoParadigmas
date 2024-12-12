@@ -25,6 +25,29 @@ public class Main {
         equipos.add(new Equipo("Villareal", 78));
     }
 
+    private static void AgregarEquipo(ArrayList<Equipo> equipos) {
+        Scanner teclado = new Scanner(System.in);
+        System.out.print("Ingresa el nombre del equipo: ");
+        String nombre = teclado.nextLine();
+        System.out.print("Ingresa el puntaje del equipo: ");
+        int score = teclado.nextInt();
+        equipos.add(new Equipo(nombre, score));
+    }
+
+    private static void EliminarEquipo(ArrayList<Equipo> equipos) {
+        Scanner teclado = new Scanner(System.in);
+        System.out.print("Ingresa el ID del equipo que quieras eliminar: ");
+        int id = teclado.nextInt();
+        for (Equipo equipo : equipos) {
+            if (equipo.getId() == id) {
+                equipos.remove(equipo);
+                return;
+            }
+        }
+        System.out.println("Equipo no encontrado.");
+        EliminarEquipo(equipos);
+    }
+
     private static void MostrarEquipos(ArrayList<Equipo> equipos) {
         System.out.printf("%-3s %-30s %-5s\n", "ID", "Equipo", "Puntos");
         for (Equipo equipo : equipos) {
@@ -37,14 +60,53 @@ public class Main {
         for (Equipo equipo : equipos) {
             if (equipo.getId() == id) {
                 equipo.setSelected(true);
+                return;
             }
         }
+        System.out.println("Equipo no encontrado.");
+        SeleccionarById(equipos);
+    }
+    
+    private static void SeleccionarById(ArrayList<Equipo> equipos) {
+        Scanner teclado = new Scanner(System.in);
+        System.out.print("Ingresa el ID del equipo que quieras seleccionar: ");
+        int id = teclado.nextInt();
+        SeleccionarById(equipos, id);
     }
 
     public static void main(String[] args) {
         Scanner teclado = new Scanner(System.in);
         ArrayList<Equipo> equipos = new ArrayList<>();
         AddEquipos(equipos);
+
+        System.out.println("Quieres agregar un equipo?");
+        System.out.println("1. Si");
+        System.out.println("2. No");
+        int opcion = teclado.nextInt();
+
+        while (opcion == 1) {
+            AgregarEquipo(equipos);
+            System.out.println("Quieres agregar otro equipo?");
+            System.out.println("1. Si");
+            System.out.println("2. No");
+            opcion = teclado.nextInt();
+        }
+
+        System.out.println("------------------------------------------");
+        System.out.println("Quieres eliminar un equipo?");
+        System.out.println("1. Si");
+        System.out.println("2. No");
+        opcion = teclado.nextInt();
+
+
+        while (opcion == 1) {
+            MostrarEquipos(equipos);
+            EliminarEquipo(equipos);
+            System.out.println("Quieres eliminar otro equipo?");
+            System.out.println("1. Si");
+            System.out.println("2. No");
+            opcion = teclado.nextInt();
+        }
 
         MostrarEquipos(equipos);
 
@@ -55,10 +117,7 @@ public class Main {
         Calendario calendario = new Calendario(equipos);
         Equipo equipoSeleccionado = equipos.stream().filter(Equipo::isSelected).findFirst().orElse(null);
 
-        if (equipoSeleccionado == null) {
-            System.out.println("No se seleccionó ningún equipo. Fin del programa.");
-            return;
-        }
+        System.out.println("------------------------------------------");
 
         SimuladorTemporada simulador = new SimuladorTemporada(calendario, equipoSeleccionado);
         simulador.iniciarSimulacion();

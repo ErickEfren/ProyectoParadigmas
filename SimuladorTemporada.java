@@ -1,6 +1,9 @@
+import java.util.Scanner;
+
 public class SimuladorTemporada {
     private Calendario calendario;
     private Equipo equipoSeleccionado;
+    private Scanner teclado = new Scanner(System.in);
 
     public SimuladorTemporada(Calendario calendario, Equipo equipoSeleccionado) {
         this.calendario = calendario;
@@ -9,12 +12,17 @@ public class SimuladorTemporada {
 
     public void iniciarSimulacion() {
         System.out.println("\nIniciando simulación de temporada para: " + equipoSeleccionado.getNombre());
+        calendario.imprimirCalendario(equipoSeleccionado);
+        System.out.println("Presiona Enter para continuar");
+        teclado.nextLine();
 
-        for (int semana = 1; semana <= 38; semana++) { // Máximo de semanas típico en ligas
+        for (int semana = 1; semana <= 38; semana++) { 
             System.out.println("\n--- Semana " + semana + " ---");
             calendario.avanzarSemana(semana);
             System.out.println("\nTabla General Actualizada:");
             calendario.mostrarTablaGeneral();
+            System.out.println("Presiona Enter para continuar");
+            teclado.nextLine();
         }
 
         System.out.println("\n--- Temporada finalizada ---");
