@@ -25,73 +25,20 @@ public class Main {
         equipos.add(new Equipo("Villareal", 78));
     }
 
-    //Método Sobrecargado
-    private static boolean EliminarById(ArrayList<Equipo> equipos, int id) {
-        for (int i = 0; i < equipos.size(); i++) {
-            if (equipos.get(i).getId() == id) {
-                System.out.println("Equipo eliminado: " + equipos.get(i).getNombre());
-                equipos.remove(i);
-                return true;
-            }
-        }
-        return EliminarById(equipos);
-    }
-
-    private static boolean EliminarById(ArrayList<Equipo> equipos) {
-        Scanner teclado = new Scanner(System.in);
-        System.out.println("Ingresa el ID del equipo que quieras eliminar: ");
-        int id = teclado.nextInt();
-        teclado.nextLine();
-
-        for (int i = 0; i < equipos.size(); i++) {
-            if (equipos.get(i).getId() == id) {
-                System.out.println("Equipo eliminado: " + equipos.get(i).getNombre());
-                equipos.remove(i);
-                return true;
-            }
-        }
-        System.out.println("No se encontro el equipo");
-        return EliminarById(equipos);
-    }
-
-    //Método Sobrecargado
-    private static void SeleccionarById(ArrayList<Equipo> equipos, int id) {
-        for (int i = 0; i < equipos.size(); i++) {
-            if (equipos.get(i).getId() == id) {
-                equipos.get(i).setSelected(true);
-                System.out.println("Equipo seleccionado: " + equipos.get(i).getNombre());
-                return;
-            }
-        }
-        System.out.println("No se encontro el equipo");
-        SeleccionarById(equipos);
-    }
-
-    private static void SeleccionarById(ArrayList<Equipo> equipos) {
-        Scanner teclado = new Scanner(System.in);
-        System.out.println("Ingresa el ID del equipo que quieras seleccionar: ");
-        int id = teclado.nextInt();
-        teclado.nextLine();
-
-        for (int i = 0; i < equipos.size(); i++) {
-            if (equipos.get(i).getId() == id) {
-                equipos.get(i).setSelected(true);
-                System.out.println("Equipo seleccionado: " + equipos.get(i).getNombre());
-                return;
-            }
-        }
-        System.out.println("No se encontro el equipo");
-        SeleccionarById(equipos);
-    }
-
     private static void MostrarEquipos(ArrayList<Equipo> equipos) {
         System.out.printf("%-3s %-30s %-5s\n", "ID", "Equipo", "Puntos");
-        System.out.println("-----------------------------------------------");
-        for (int i = 0; i < equipos.size(); i++) {
-            String color = equipos.get(i).isSelected() ? "\u001B[32m" : "\u001B[37m";
-            System.out.printf(color + "%-3d %-30s %-5d \u001B[0m \n", equipos.get(i).getId(), equipos.get(i).getNombre(), equipos.get(i).getScore());
+        for (Equipo equipo : equipos) {
+            String color = equipo.isSelected() ? "\u001B[32m" : "\u001B[37m";
+            System.out.printf(color + "%-3d %-30s %-5d \u001B[0m\n", equipo.getId(), equipo.getNombre(), equipo.getScore());
         }
-        System.out.println("-----------------------------------------------");
+    }
+
+    private static void SeleccionarById(ArrayList<Equipo> equipos, int id) {
+        for (Equipo equipo : equipos) {
+            if (equipo.getId() == id) {
+                equipo.setSelected(true);
+            }
+        }
     }
 
     public static void main(String[] args) {
@@ -101,40 +48,19 @@ public class Main {
 
         MostrarEquipos(equipos);
 
-        System.out.println("-----------------------------------------------");
-        System.out.println("Estos son los equipos base, deseas agregar alguno? (S/N)");
-        String resp = teclado.nextLine();
-        while (resp.equalsIgnoreCase("S")) {
-            System.out.println("Ingresa el nombre del equipo: ");
-            String name = teclado.nextLine();
-            System.out.println("Ingresa el puntaje del equipo: ");
-            int score = teclado.nextInt();
-            teclado.nextLine();
-
-            equipos.add(new Equipo(name, score));
-            System.out.println("Quieres agregar más equipos? (S/N)");
-            resp = teclado.nextLine();
-        }
-
-        MostrarEquipos(equipos);
-
-        System.out.println("-----------------------------------------------");
-        System.out.println("Deseas eliminar algun equipo? (S/N)");
-        resp = teclado.nextLine();
-        while (resp.equalsIgnoreCase("S")) {
-            boolean deleted = EliminarById(equipos);
-
-            System.out.println("Deseas eliminar algun equipo mas? (S/N)");
-            resp = teclado.nextLine();
-        }
-
-        MostrarEquipos(equipos);
-
-        System.out.print("Ingresa el ID del equipo que quieras ser: ");
+        System.out.print("Ingresa el ID del equipo que quieras seleccionar: ");
         int ID = teclado.nextInt();
-
         SeleccionarById(equipos, ID);
 
-        equipos.generateMatches(equipos);
+        Calendario calendario = new Calendario(equipos);
+        Equipo equipoSeleccionado = equipos.stream().filter(Equipo::isSelected).findFirst().orElse(null);
+
+        if (equipoSeleccionado == null) {
+            System.out.println("No se seleccionó ningún equipo. Fin del programa.");
+            return;
+        }
+
+        SimuladorTemporada simulador = new SimuladorTemporada(calendario, equipoSeleccionado);
+        simulador.iniciarSimulacion();
     }
 }
