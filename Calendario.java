@@ -13,35 +13,37 @@ public class Calendario {
 
     private void generarCalendario(ArrayList<Equipo> equipos) {
         if (equipos.size() % 2 != 0) {
-            equipos.add(new Equipo());
+            equipos.add(new Equipo()); // Añadir equipo "descanso"
         }
 
         int numEquipos = equipos.size();
         int numJornadas = numEquipos - 1;
 
+        ArrayList<Equipo> equiposCopia = new ArrayList<>(equipos);
+
         for (int i = 0; i < numJornadas; i++) {
             ArrayList<Partido> jornada = new ArrayList<>();
-            Collections.shuffle(equipos);
-
             for (int j = 0; j < numEquipos / 2; j++) {
-                Equipo local = equipos.get(j);
-                Equipo visitante = equipos.get(numEquipos - j - 1);
+                Equipo local = equiposCopia.get(j);
+                Equipo visitante = equiposCopia.get(numEquipos - j - 1);
 
                 if (!local.getNombre().equals("Semana de Descanso") &&
-                    !visitante.getNombre().equals("Semana de Descanso")) {
+                        !visitante.getNombre().equals("Semana de Descanso")) {
                     jornada.add(new Partido(local, visitante));
                 }
             }
+
             jornadas.add(jornada);
+            // Rotación de equipos para la siguiente jornada
+            Collections.rotate(equiposCopia.subList(1, numEquipos), 1);
         }
 
+        // Crear las jornadas de vuelta
         for (int i = 0; i < numJornadas; i++) {
             ArrayList<Partido> jornada = new ArrayList<>();
-
             for (Partido partidoIda : jornadas.get(i)) {
                 Equipo local = partidoIda.getVisitante();
                 Equipo visitante = partidoIda.getLocal();
-
                 jornada.add(new Partido(local, visitante));
             }
             jornadas.add(jornada);
@@ -81,8 +83,11 @@ public class Calendario {
         }
     }
 
+    public ArrayList<ArrayList<Partido>> getJornadas() {
+        return jornadas;
+    }
+
     public void mostrarTablaGeneral() {
         tablaGeneral.mostrarTabla();
     }
 }
-

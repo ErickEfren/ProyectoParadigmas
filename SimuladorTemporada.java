@@ -16,7 +16,9 @@ public class SimuladorTemporada {
         System.out.println("Presiona Enter para continuar");
         teclado.nextLine();
 
-        for (int semana = 1; semana <= 38; semana++) { 
+        int totalSemanas = calendario.getJornadas().size(); // Total de jornadas dinámico
+
+        for (int semana = 1; semana <= totalSemanas; semana++) {
             System.out.println("\n--- Semana " + semana + " ---");
             calendario.avanzarSemana(semana);
             System.out.println("\nTabla General Actualizada:");
@@ -29,4 +31,5 @@ public class SimuladorTemporada {
         System.out.println("Tabla final:");
         calendario.mostrarTablaGeneral();
     }
+
 }
